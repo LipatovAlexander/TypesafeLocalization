@@ -1,8 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7AF02901-80A4-4BA8-ABFE-E98BD2D761E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypesafeLocalization", "src\TypesafeLocalization\TypesafeLocalization.csproj", "{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC} = {7AF02901-80A4-4BA8-ABFE-E98BD2D761E2}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6028AAC9-7818-4BDE-A6DB-FF0F8138BAFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
