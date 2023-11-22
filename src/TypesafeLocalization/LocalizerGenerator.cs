@@ -10,8 +10,7 @@ public sealed class LocalizerGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var translations = context.AdditionalTextsProvider
-            .Where(text => text.Path.EndsWith("translations.json",
-                StringComparison.OrdinalIgnoreCase))
+            .Where(text => text.Path.EndsWith(".i18n.json"))
             .Select((text, token) => text.GetText(token)?.ToString())
             .Where(text => text is not null)!
             .Collect<string>();
