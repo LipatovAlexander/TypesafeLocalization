@@ -45,6 +45,7 @@ public static class SourceGenerationHelper
                               [System.AttributeUsage(System.AttributeTargets.Assembly)]
                               public sealed class LocalizationProviderAttribute : System.Attribute
                               {
+                                public Locale? BaseLocale { get; set; }
                               }
                               """;
 

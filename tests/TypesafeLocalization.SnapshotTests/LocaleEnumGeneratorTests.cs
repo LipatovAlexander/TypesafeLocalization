@@ -4,7 +4,7 @@
 public sealed class LocaleEnumGeneratorTests
 {
     [Fact]
-    public async Task ShouldNotGenerateEnum_WhenNoTranslationsFound()
+    public async Task ShouldGenerateEmptyEnum_WhenNoTranslationsFound()
     {
         await TestHelper.Verify<LocaleEnumGenerator>();
     }

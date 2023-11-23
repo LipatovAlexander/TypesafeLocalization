@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Text.Json;
 using Microsoft.CodeAnalysis;
 
 namespace TypesafeLocalization;
@@ -22,13 +21,9 @@ public sealed class LocalizerInterfaceGenerator : IIncrementalGenerator
     {
         var translations = TranslationsDeserializer.GetTranslations(context, translationsAsJson);
 
-        if (translations.Count == 0)
-        {
-            return;
-        }
+        var firstTranslation = translations.FirstOrDefault();
+        var keys = firstTranslation?.Keys.ToArray() ?? Array.Empty<string>();
 
-        var firstTranslation = translations.First();
-
-        context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.Localizer(firstTranslation.Keys));
+        context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.Localizer(keys));
     }
 }

@@ -4,6 +4,12 @@ namespace TypesafeLocalization.SnapshotTests;
 public class LocalizerInterfaceGeneratorTests
 {
     [Fact]
+    public async Task ShouldGenerateEmptyInterface_WhenNoTranslationsFound()
+    {
+        await TestHelper.Verify<LocalizerInterfaceGenerator>();
+    }
+
+    [Fact]
     public async Task ShouldGenerateInterfaceCorrectly()
     {
         const string translationPath = "Localization.i18n.json";

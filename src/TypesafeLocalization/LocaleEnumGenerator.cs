@@ -36,11 +36,6 @@ public sealed class LocaleEnumGenerator : IIncrementalGenerator
             locales.Add(locale);
         }
 
-        if (locales.Count == 0)
-        {
-            return;
-        }
-
         context.AddSource("Locale.g.cs", SourceGenerationHelper.LocaleEnum(locales));
     }
 }
