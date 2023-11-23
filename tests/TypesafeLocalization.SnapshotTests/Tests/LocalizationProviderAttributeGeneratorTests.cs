@@ -1,4 +1,6 @@
-﻿namespace TypesafeLocalization.SnapshotTests.Tests;
+﻿using TypesafeLocalization.Generators;
+
+namespace TypesafeLocalization.SnapshotTests.Tests;
 
 [UsesVerify]
 public sealed class LocalizationProviderAttributeGeneratorTests

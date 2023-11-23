@@ -1,3 +1,5 @@
+using TypesafeLocalization.Generators;
+
 namespace TypesafeLocalization.SnapshotTests.Tests;
 
 [UsesVerify]

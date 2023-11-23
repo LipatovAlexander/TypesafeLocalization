@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
-namespace TypesafeLocalization;
+namespace TypesafeLocalization.Generators;
 
 [Generator]
 public sealed class LocaleEnumGenerator : IIncrementalGenerator
