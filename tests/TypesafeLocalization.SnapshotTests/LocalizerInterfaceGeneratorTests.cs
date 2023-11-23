@@ -1,7 +1,7 @@
 namespace TypesafeLocalization.SnapshotTests;
 
 [UsesVerify]
-public class BasicTests
+public class LocalizerInterfaceGeneratorTests
 {
     [Fact]
     public async Task ShouldGenerateInterfaceCorrectly()
@@ -15,7 +15,7 @@ public class BasicTests
 
         var translationAdditionalText = new InMemoryAdditionalText(translationPath, translationJson);
 
-        await TestHelper.Verify(translationAdditionalText);
+        await TestHelper.Verify<LocalizerInterfaceGenerator>(translationAdditionalText);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class BasicTests
 
         var translationAdditionalText = new InMemoryAdditionalText(translationPath, translationJson);
 
-        await TestHelper.Verify(translationAdditionalText);
+        await TestHelper.Verify<LocalizerInterfaceGenerator>(translationAdditionalText);
     }
 
     [Fact]
@@ -46,6 +46,6 @@ public class BasicTests
 
         var translationAdditionalText = new InMemoryAdditionalText(translationPath, translationJson);
 
-        await TestHelper.Verify(translationAdditionalText);
+        await TestHelper.Verify<LocalizerInterfaceGenerator>(translationAdditionalText);
     }
 }

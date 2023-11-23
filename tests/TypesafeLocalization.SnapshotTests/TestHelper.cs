@@ -6,11 +6,12 @@ namespace TypesafeLocalization.SnapshotTests;
 
 public static class TestHelper
 {
-    public static Task Verify(params InMemoryAdditionalText[] additionalTexts)
+    public static Task Verify<TGenerator>(params InMemoryAdditionalText[] additionalTexts)
+        where TGenerator : IIncrementalGenerator, new()
     {
         var compilation = CSharpCompilation.Create("Tests");
 
-        var generator = new LocalizerGenerator();
+        var generator = new TGenerator();
 
         var driver = CSharpGeneratorDriver.Create(generator)
             .AddAdditionalTexts(additionalTexts.Cast<AdditionalText>().ToImmutableArray())
