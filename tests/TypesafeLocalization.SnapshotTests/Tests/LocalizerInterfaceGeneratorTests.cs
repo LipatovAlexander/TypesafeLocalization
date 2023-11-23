@@ -1,16 +1,16 @@
-namespace TypesafeLocalization.SnapshotTests;
+namespace TypesafeLocalization.SnapshotTests.Tests;
 
 [UsesVerify]
 public class LocalizerInterfaceGeneratorTests
 {
     [Fact]
-    public async Task ShouldGenerateEmptyInterface_WhenNoTranslationsFound()
+    public async Task NoTranslations()
     {
         await TestHelper.Verify<LocalizerInterfaceGenerator>();
     }
 
     [Fact]
-    public async Task ShouldGenerateInterfaceCorrectly()
+    public async Task OneKey()
     {
         const string translationPath = "Localization.i18n.json";
         const string translationJson = """
@@ -25,7 +25,7 @@ public class LocalizerInterfaceGeneratorTests
     }
 
     [Fact]
-    public async Task ShouldGenerateInterfaceCorrectly_WhenMultipleKeys()
+    public async Task MultipleKeys()
     {
         const string translationPath = "Localization.i18n.json";
         const string translationJson = """
@@ -42,7 +42,7 @@ public class LocalizerInterfaceGeneratorTests
     }
 
     [Fact]
-    public async Task ShouldGenerateInterfaceCorrectly_WhenNoKeys()
+    public async Task NoKeys()
     {
         const string translationPath = "Localization.i18n.json";
         const string translationJson = """

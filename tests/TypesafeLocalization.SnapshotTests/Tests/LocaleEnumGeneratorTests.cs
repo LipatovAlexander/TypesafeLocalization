@@ -1,16 +1,16 @@
-﻿namespace TypesafeLocalization.SnapshotTests;
+﻿namespace TypesafeLocalization.SnapshotTests.Tests;
 
 [UsesVerify]
 public sealed class LocaleEnumGeneratorTests
 {
     [Fact]
-    public async Task ShouldGenerateEmptyEnum_WhenNoTranslationsFound()
+    public async Task NoTranslations()
     {
         await TestHelper.Verify<LocaleEnumGenerator>();
     }
 
     [Fact]
-    public async Task ShouldGenerateEnum_WhenOneTranslationFound()
+    public async Task OneTranslation()
     {
         const string translationPath = "Localization.en.i18n.json";
         const string translationJson = """
@@ -24,7 +24,7 @@ public sealed class LocaleEnumGeneratorTests
     }
 
     [Fact]
-    public async Task ShouldGenerateEnum_WhenMultipleTranslationFound()
+    public async Task MultipleTranslations()
     {
         const string translationPath1 = "Localization.en.i18n.json";
         const string translationPath2 = "Localization.ru.i18n.json";
@@ -40,7 +40,7 @@ public sealed class LocaleEnumGeneratorTests
     }
 
     [Fact]
-    public async Task ShouldGenerateEnum_WhenKeyWithSeparatorFound()
+    public async Task LocalesWithSeparator()
     {
         const string translationPath1 = "Localization.en-US.i18n.json";
         const string translationPath2 = "Localization.ru_RU.i18n.json";
