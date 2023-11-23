@@ -20,6 +20,7 @@ public static class SourceGenerationHelper
         syntaxesList = syntaxesList.AddRange(syntaxes);
 
         var enumDeclaration = SyntaxFactory.EnumDeclaration("Locale")
+            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
             .WithMembers(syntaxesList);
 
         var text = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(Namespace))

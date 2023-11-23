@@ -1,6 +1,6 @@
 ﻿//HintName: Locale.g.cs
 namespace TypesafeLocalization;
-enum Locale
+public enum Locale
 {
     en,
     ru
