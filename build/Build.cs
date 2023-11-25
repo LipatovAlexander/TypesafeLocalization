@@ -78,7 +78,7 @@ class Build : NukeBuild
                 .EnableNoBuild()
                 .EnableNoRestore()
                 .When(IsServerBuild, x => x.SetProperty("ContinuousIntegrationBuild", "true"))
-                .SetProject(Solution));
+                .SetProject(Solution.src.TypesafeLocalization));
         });
 
     Target PushToNuGet => _ => _
