@@ -17,7 +17,7 @@ public static class SourceGenerationHelper
 
     private const string Namespace = "namespace TypesafeLocalization;";
 
-    public static string LocalizerInterface(Translation baseTranslation)
+    public static string LocalizerInterface(LocalizationInfo localizationInfo)
     {
         var stringBuilder = new StringBuilder();
 
@@ -28,9 +28,30 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public interface ILocalizer");
         stringBuilder.AppendLine("{");
 
-        foreach (var translation in baseTranslation.Dictionary)
+        foreach (var translation in localizationInfo.BaseTranslation.Dictionary)
         {
             stringBuilder.AppendLine($"    string {translation.Key}();");
+        }
+
+        stringBuilder.AppendLine("}");
+
+        return stringBuilder.ToString();
+    }
+
+    public static string LocaleEnum(LocalizationInfo localizationInfo)
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.AppendLine(FileHeaderComment);
+        stringBuilder.AppendLine(Namespace);
+        stringBuilder.AppendLine();
+
+        stringBuilder.AppendLine("public enum Locale");
+        stringBuilder.AppendLine("{");
+
+        foreach (var translation in localizationInfo.Translations)
+        {
+            stringBuilder.AppendLine($"    {translation.NormalizedLocale},");
         }
 
         stringBuilder.AppendLine("}");

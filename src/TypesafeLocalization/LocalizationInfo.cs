@@ -6,4 +6,9 @@ public sealed record LocalizationInfo(Configuration Configuration, Translation B
 
 public sealed record Configuration(string BaseLocale);
 
-public sealed record Translation(string Locale, ImmutableSortedDictionary<string, string> Dictionary);
+public sealed record Translation(string Locale, ImmutableSortedDictionary<string, string> Dictionary)
+{
+    public string NormalizedLocale { get; } = Locale
+        .Replace("-", "")
+        .Replace("_", "");
+};

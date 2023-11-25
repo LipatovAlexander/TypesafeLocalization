@@ -39,6 +39,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             return;
         }
 
-        context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.LocalizerInterface(localizationInfo.BaseTranslation));
+        context.AddSource("Locale.g.cs", SourceGenerationHelper.LocaleEnum(localizationInfo));
+        context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.LocalizerInterface(localizationInfo));
     }
 }
