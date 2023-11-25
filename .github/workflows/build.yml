@@ -20,7 +20,6 @@ on:
   push:
     branches:
       - master
-      - main
 
 jobs:
   ubuntu-latest:
@@ -35,5 +34,12 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      - name: 'Run: Clean, Test'
-        run: ./build.cmd Clean Test
+      - name: 'Run: Clean, Test, PushToNuGet'
+        run: ./build.cmd Clean Test PushToNuGet
+        env:
+          NuGetToken: ${{ secrets.NUGET_TOKEN }}
+      - name: 'Publish: artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: artifacts

@@ -47,6 +47,9 @@
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
         },
+        "NuGetToken": {
+          "type": "string"
+        },
         "Partition": {
           "type": "string",
           "description": "Partition to use on CI"
@@ -74,6 +77,8 @@
             "enum": [
               "Clean",
               "Compile",
+              "Pack",
+              "PushToNuGet",
               "Restore",
               "Test"
             ]
@@ -91,6 +96,8 @@
             "enum": [
               "Clean",
               "Compile",
+              "Pack",
+              "PushToNuGet",
               "Restore",
               "Test"
             ]

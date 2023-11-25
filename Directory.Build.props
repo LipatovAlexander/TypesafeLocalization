@@ -1,0 +1,25 @@
+<Project>
+
+    <Import Project="version.props" />
+
+    <PropertyGroup>
+        <Authors>Lipatov Alexander</Authors>
+        <Copyright>Copyright © LipatovAlexander</Copyright>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/LipatovAlexander/TypesafeLocalization</PackageProjectUrl>
+        <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)\artifacts</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
+
+</Project>
