@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Immutable;
+using System.Text.Json;
 using Microsoft.CodeAnalysis;
 
 namespace TypesafeLocalization;
@@ -143,15 +144,11 @@ public static class LocalizationInfoParser
                     return false;
                 }
 
-                var localizationStrings = translationDictionary
-                    .Select(pair => new LocalizationString(pair.Key, pair.Value))
-                    .ToArray();
-
                 var filename = Path.GetFileNameWithoutExtension(translationText.Path);
                 var splitted = filename.Split('.');
                 var locale = splitted[1];
 
-                var translation = new Translation(locale, localizationStrings);
+                var translation = new Translation(locale, translationDictionary.ToImmutableSortedDictionary());
                 result.Add(translation);
             }
             catch (JsonException exception)

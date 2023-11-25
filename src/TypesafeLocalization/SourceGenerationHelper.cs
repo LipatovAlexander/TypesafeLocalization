@@ -28,9 +28,9 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public interface ILocalizer");
         stringBuilder.AppendLine("{");
 
-        foreach (var localizationString in baseTranslation.Strings)
+        foreach (var translation in baseTranslation.Dictionary)
         {
-            stringBuilder.AppendLine($"    string {localizationString.Key}();");
+            stringBuilder.AppendLine($"    string {translation.Key}();");
         }
 
         stringBuilder.AppendLine("}");
