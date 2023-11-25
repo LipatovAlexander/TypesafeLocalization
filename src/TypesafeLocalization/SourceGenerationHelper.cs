@@ -58,4 +58,46 @@ public static class SourceGenerationHelper
 
         return stringBuilder.ToString();
     }
+
+    public static string LocalizerClass(LocalizationInfo localizationInfo)
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.AppendLine(FileHeaderComment);
+        stringBuilder.AppendLine(Namespace);
+        stringBuilder.AppendLine();
+
+        stringBuilder.AppendLine("public sealed class Localizer : ILocalizer");
+        stringBuilder.AppendLine("{");
+        stringBuilder.AppendLine("    private readonly Locale _locale;");
+        stringBuilder.AppendLine();
+        stringBuilder.AppendLine("    public Localizer(Locale locale)");
+        stringBuilder.AppendLine("    {");
+        stringBuilder.AppendLine("        _locale = locale;");
+        stringBuilder.AppendLine("    }");
+        stringBuilder.AppendLine();
+
+        foreach (var baseTranslation in localizationInfo.BaseTranslation.Dictionary)
+        {
+            stringBuilder.AppendLine($"    public string {baseTranslation.Key}()");
+            stringBuilder.AppendLine("    {");
+            stringBuilder.AppendLine("        return _locale switch");
+            stringBuilder.AppendLine("        {");
+
+            foreach (var translation in localizationInfo.Translations)
+            {
+                stringBuilder.AppendLine(
+                    $"            Locale.{translation.NormalizedLocale} => \"{translation.Dictionary[baseTranslation.Key]}\",");
+            }
+
+            stringBuilder.AppendLine("            _ => throw new ArgumentOutOfRangeException()");
+            stringBuilder.AppendLine("        };");
+            stringBuilder.AppendLine("    }");
+            stringBuilder.AppendLine();
+        }
+        
+        stringBuilder.AppendLine("}");
+
+        return stringBuilder.ToString();
+    }
 }

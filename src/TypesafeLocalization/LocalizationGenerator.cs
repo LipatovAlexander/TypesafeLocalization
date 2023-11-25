@@ -41,5 +41,6 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
 
         context.AddSource("Locale.g.cs", SourceGenerationHelper.LocaleEnum(localizationInfo));
         context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.LocalizerInterface(localizationInfo));
+        context.AddSource("Localizer.g.cs", SourceGenerationHelper.LocalizerClass(localizationInfo));
     }
 }
