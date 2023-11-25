@@ -100,4 +100,27 @@ public static class SourceGenerationHelper
 
         return stringBuilder.ToString();
     }
+
+    public const string LocalizerFactoryInterface = $$"""
+                                                      {{FileHeaderComment}}
+                                                      {{Namespace}}
+
+                                                      public interface ILocalizerFactory
+                                                      {
+                                                          ILocalizer CreateLocalizer(Locale locale);
+                                                      }
+                                                      """;
+
+    public const string LocalizerFactoryClass = $$"""
+                                                  {{FileHeaderComment}}
+                                                  {{Namespace}}
+
+                                                  public sealed class LocalizerFactory : ILocalizerFactory
+                                                  {
+                                                      public ILocalizer CreateLocalizer(Locale locale)
+                                                      {
+                                                          return new Localizer(locale);
+                                                      }
+                                                  }
+                                                  """;
 }
