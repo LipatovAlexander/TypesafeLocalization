@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="TypesafeLocalization" Version="0.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="TypesafeLocalizationConfig.json" />
+      <AdditionalFiles Include="Translation.en-US.i18n.json" />
+      <AdditionalFiles Include="Translation.ru-RU.i18n.json" />
+    </ItemGroup>
+
+</Project>

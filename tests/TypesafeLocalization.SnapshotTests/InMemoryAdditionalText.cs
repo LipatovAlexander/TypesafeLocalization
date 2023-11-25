@@ -3,11 +3,17 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace TypesafeLocalization.SnapshotTests;
 
-public sealed class InMemoryAdditionalText(string path, string text) : AdditionalText
+public sealed class InMemoryAdditionalText : AdditionalText
 {
-    private readonly string _text = text;
+    private readonly string _text;
 
-    public override string Path { get; } = path;
+    public InMemoryAdditionalText(string path, string text)
+    {
+        _text = text;
+        Path = path;
+    }
+
+    public override string Path { get; }
 
     public override SourceText GetText(CancellationToken cancellationToken = new())
     {
