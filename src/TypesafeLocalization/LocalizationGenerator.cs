@@ -14,7 +14,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             .Collect();
 
         var translations = context.AdditionalTextsProvider
-            .Where(text => Regex.IsMatch(text.Path, @"^Translation\.[a-zA-Z\-_]*\.i18n\.json$"))
+            .Where(text => Regex.IsMatch(Path.GetFileName(text.Path), @"^Translation\.[a-zA-Z\-_]*\.i18n\.json$"))
             .Collect();
 
         var valueProvider = configurations.Combine(translations);

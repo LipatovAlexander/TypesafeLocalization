@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
-using System.Text.Json;
 using Microsoft.CodeAnalysis;
+using TypesafeLocalization.LightJson;
+using TypesafeLocalization.LightJson.Serialization;
 
 namespace TypesafeLocalization;
 
@@ -92,18 +93,12 @@ public static class LocalizationInfoParser
 
         try
         {
-            var deserializedConfiguration = JsonSerializer.Deserialize<Configuration>(text);
-            if (deserializedConfiguration is null)
-            {
-                var diagnostic = Diagnostic.Create(DiagnosticsDescriptors.InvalidConfigurationFile, Location.None);
-                context.ReportDiagnostic(diagnostic);
-                return false;
-            }
-
-            configuration = deserializedConfiguration;
+            var json = JsonValue.Parse(text).AsJsonObject;
+            var baseLocale = json["BaseLocale"].AsString;
+            configuration = new Configuration(baseLocale);
             return true;
         }
-        catch (JsonException exception)
+        catch (JsonParseException exception)
         {
             var diagnostic = Diagnostic.Create(
                 DiagnosticsDescriptors.ConfigurationFileDeserializationError,
@@ -135,23 +130,20 @@ public static class LocalizationInfoParser
 
             try
             {
-                var translationDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(text);
-
-                if (translationDictionary is null)
-                {
-                    var diagnostic = Diagnostic.Create(DiagnosticsDescriptors.InvalidTranslationFile, Location.None, translationText.Path);
-                    context.ReportDiagnostic(diagnostic);
-                    return false;
-                }
+                var json = JsonValue.Parse(text).AsJsonObject;
+                var translationDictionary = json
+                    .AsDictionary()
+                    .ToImmutableSortedDictionary(
+                        x => x.Key,
+                        x => x.Value.AsString);
 
                 var filename = Path.GetFileNameWithoutExtension(translationText.Path);
-                var splitted = filename.Split('.');
-                var locale = splitted[1];
+                var locale = filename.Split('.')[1];
 
-                var translation = new Translation(locale, translationDictionary.ToImmutableSortedDictionary());
+                var translation = new Translation(locale, translationDictionary);
                 result.Add(translation);
             }
-            catch (JsonException exception)
+            catch (JsonParseException exception)
             {
                 var diagnostic = Diagnostic.Create(
                     DiagnosticsDescriptors.TranslationFileDeserializationError,
