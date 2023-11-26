@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
 using System.Text;
+using ErrorType = TypesafeLocalization.LightJson.Serialization.JsonParseException.ErrorType;
 
 namespace TypesafeLocalization.LightJson.Serialization;
 
-using ErrorType = JsonParseException.ErrorType;
+// ReSharper disable InvertIf
+// ReSharper disable UnusedMember.Global
 
 /// <summary>
 /// Represents a reader that can read JsonValues.
@@ -195,19 +197,6 @@ public sealed class JsonReader
             }
             else
             {
-                // According to the spec:
-                //
-                // unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
-                //
-                // i.e. c cannot be < 0x20, be 0x22 (a double quote) or a
-                // backslash (0x5C).
-                //
-                // c cannot be a back slash or double quote as the above
-                // would have hit. So just check for < 0x20.
-                //
-                // > 0x10FFFF is unnecessary *I think* because it's obviously
-                // out of the range of a character but we might need to look ahead
-                // to get the whole utf-16 codepoint.
                 if (c < '\u0020')
                 {
                     throw new JsonParseException(
@@ -225,67 +214,31 @@ public sealed class JsonReader
 
     private int ReadHexDigit()
     {
-        switch (char.ToUpper(_scanner.Read()))
+        return char.ToUpper(_scanner.Read()) switch
         {
-            case '0':
-                return 0;
-
-            case '1':
-                return 1;
-
-            case '2':
-                return 2;
-
-            case '3':
-                return 3;
-
-            case '4':
-                return 4;
-
-            case '5':
-                return 5;
-
-            case '6':
-                return 6;
-
-            case '7':
-                return 7;
-
-            case '8':
-                return 8;
-
-            case '9':
-                return 9;
-
-            case 'A':
-                return 10;
-
-            case 'B':
-                return 11;
-
-            case 'C':
-                return 12;
-
-            case 'D':
-                return 13;
-
-            case 'E':
-                return 14;
-
-            case 'F':
-                return 15;
-
-            default:
-                throw new JsonParseException(
-                    ErrorType.InvalidOrUnexpectedCharacter,
-                    _scanner.Position
-                );
-        }
+            '0' => 0,
+            '1' => 1,
+            '2' => 2,
+            '3' => 3,
+            '4' => 4,
+            '5' => 5,
+            '6' => 6,
+            '7' => 7,
+            '8' => 8,
+            '9' => 9,
+            'A' => 10,
+            'B' => 11,
+            'C' => 12,
+            'D' => 13,
+            'E' => 14,
+            'F' => 15,
+            _ => throw new JsonParseException(ErrorType.InvalidOrUnexpectedCharacter, _scanner.Position)
+        };
     }
 
     private char ReadUnicodeLiteral()
     {
-        int value = 0;
+        var value = 0;
 
         value += ReadHexDigit() * 4096; // 16^3
         value += ReadHexDigit() * 256; // 16^2
@@ -423,7 +376,7 @@ public sealed class JsonReader
     {
         if (reader is null)
         {
-            throw new ArgumentNullException("reader");
+            throw new ArgumentNullException(nameof(reader));
         }
 
         return new JsonReader(reader).Parse();
@@ -437,13 +390,11 @@ public sealed class JsonReader
     {
         if (source is null)
         {
-            throw new ArgumentNullException("source");
+            throw new ArgumentNullException(nameof(source));
         }
 
-        using (var reader = new StringReader(source))
-        {
-            return new JsonReader(reader).Parse();
-        }
+        using var reader = new StringReader(source);
+        return new JsonReader(reader).Parse();
     }
 
     /// <summary>
@@ -454,14 +405,12 @@ public sealed class JsonReader
     {
         if (path is null)
         {
-            throw new ArgumentNullException("path");
+            throw new ArgumentNullException(nameof(path));
         }
 
         // NOTE: FileAccess.Read is needed to be able to open read-only files
-        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-        using (var reader = new StreamReader(stream))
-        {
-            return new JsonReader(reader).Parse();
-        }
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        using var reader = new StreamReader(stream);
+        return new JsonReader(reader).Parse();
     }
 }

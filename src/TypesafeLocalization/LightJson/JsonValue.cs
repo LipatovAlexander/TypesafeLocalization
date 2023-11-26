@@ -1,7 +1,13 @@
 using System.Diagnostics;
+using System.Globalization;
 using TypesafeLocalization.LightJson.Serialization;
 
 namespace TypesafeLocalization.LightJson;
+
+// ReSharper disable UnusedMember.Local
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable ConvertIfStatementToReturnStatement
 
 /// <summary>
 /// A wrapper object that contains a valid JSON value.
@@ -168,7 +174,7 @@ public readonly struct JsonValue
             return Type switch
             {
                 JsonValueType.Boolean => _value == 1 ? "true" : "false",
-                JsonValueType.Number => _value.ToString(),
+                JsonValueType.Number => _value.ToString(CultureInfo.InvariantCulture),
                 JsonValueType.String => (string) _reference,
                 _ => null
             };
@@ -198,7 +204,7 @@ public readonly struct JsonValue
     {
         get
         {
-            if (IsString && DateTime.TryParse((string) _reference, out DateTime value))
+            if (IsString && DateTime.TryParse((string) _reference, out var value))
             {
                 return value;
             }
@@ -681,19 +687,12 @@ public readonly struct JsonValue
     /// <param name="obj">The object to test.</param>
     public override bool Equals(object obj)
     {
-        if (obj is null)
+        return obj switch
         {
-            return IsNull;
-        }
-
-        var jsonValue = obj as JsonValue?;
-
-        if (jsonValue.HasValue)
-        {
-            return this == jsonValue.Value;
-        }
-
-        return false;
+            null => IsNull,
+            JsonValue jsonValue => this == jsonValue,
+            _ => false
+        };
     }
 
     /// <summary>

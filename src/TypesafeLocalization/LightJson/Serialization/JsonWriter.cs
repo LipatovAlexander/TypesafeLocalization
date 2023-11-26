@@ -1,8 +1,12 @@
 ﻿using System.Globalization;
+using ErrorType = TypesafeLocalization.LightJson.Serialization.JsonSerializationException.ErrorType;
 
 namespace TypesafeLocalization.LightJson.Serialization;
 
-using ErrorType = JsonSerializationException.ErrorType;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
 
 /// <summary>
 /// Represents a TextWriter adapter that can write string representations of JsonValues.
@@ -48,18 +52,10 @@ public sealed class JsonWriter
     /// Initializes a new instance of JsonWriter.
     /// </summary>
     /// <param name="innerWriter">The TextWriter used to write JsonValues.</param>
-    public JsonWriter(TextWriter innerWriter) : this(innerWriter, false)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of JsonWriter.
-    /// </summary>
-    /// <param name="innerWriter">The TextWriter used to write JsonValues.</param>
     /// <param name="pretty">
     /// A value indicating whether the output of the writer should be human-readable.
     /// </param>
-    public JsonWriter(TextWriter innerWriter, bool pretty)
+    public JsonWriter(TextWriter innerWriter, bool pretty = false)
     {
         if (pretty)
         {
@@ -110,11 +106,11 @@ public sealed class JsonWriter
                 break;
 
             case JsonValueType.Object:
-                Write(string.Format("JsonObject[{0}]", value.AsJsonObject.Count));
+                Write($"JsonObject[{value.AsJsonObject.Count}]");
                 break;
 
             case JsonValueType.Array:
-                Write(string.Format("JsonArray[{0}]", value.AsJsonArray.Count));
+                Write($"JsonArray[{value.AsJsonArray.Count}]");
                 break;
 
             default:
@@ -126,7 +122,7 @@ public sealed class JsonWriter
     {
         Write("\"");
 
-        for (int i = 0; i < text.Length; i += 1)
+        for (var i = 0; i < text.Length; i += 1)
         {
             var currentChar = text[i];
 
@@ -134,7 +130,7 @@ public sealed class JsonWriter
             switch (currentChar)
             {
                 case '\\':
-                    InnerWriter.Write("\\\\");
+                    InnerWriter.Write(@"\\");
                     break;
 
                 case '\"':
@@ -312,26 +308,26 @@ public sealed class JsonWriter
     }
 
     /// <summary>
-    /// Gets an JsonObject enumarator based on the configuration of this JsonWriter.
+    /// Gets an JsonObject enumerator based on the configuration of this JsonWriter.
     /// If JsonWriter.SortObjects is set to true, then a ordered enumerator is returned.
     /// Otherwise, a faster non-deterministic enumerator is returned.
     /// </summary>
     /// <param name="jsonObject">The JsonObject for which to get an enumerator.</param>
     private IEnumerator<KeyValuePair<string, JsonValue>> GetJsonObjectEnumerator(JsonObject jsonObject)
     {
-        if (SortObjects)
+        if (!SortObjects)
         {
-            var sortedDictionary = new SortedDictionary<string, JsonValue>(StringComparer.Ordinal);
-
-            foreach (var item in jsonObject)
-            {
-                sortedDictionary.Add(item.Key, item.Value);
-            }
-
-            return sortedDictionary.GetEnumerator();
+            return jsonObject.GetEnumerator();
         }
 
-        return jsonObject.GetEnumerator();
+        var sortedDictionary = new SortedDictionary<string, JsonValue>(StringComparer.Ordinal);
+
+        foreach (var item in jsonObject)
+        {
+            sortedDictionary.Add(item.Key, item.Value);
+        }
+
+        return sortedDictionary.GetEnumerator();
     }
 
     /// <summary>
@@ -357,25 +353,14 @@ public sealed class JsonWriter
     /// Generates a string representation of the given value.
     /// </summary>
     /// <param name="value">The value to serialize.</param>
-    public static string Serialize(JsonValue value)
-    {
-        return Serialize(value, false);
-    }
-
-    /// <summary>
-    /// Generates a string representation of the given value.
-    /// </summary>
-    /// <param name="value">The value to serialize.</param>
     /// <param name="pretty">Indicates whether the resulting string should be formatted for human-readability.</param>
-    public static string Serialize(JsonValue value, bool pretty)
+    public static string Serialize(JsonValue value, bool pretty = false)
     {
-        using (var stringWriter = new StringWriter())
-        {
-            var jsonWriter = new JsonWriter(stringWriter, pretty);
+        using var stringWriter = new StringWriter();
+        var jsonWriter = new JsonWriter(stringWriter, pretty);
 
-            jsonWriter.Write(value);
+        jsonWriter.Write(value);
 
-            return stringWriter.ToString();
-        }
+        return stringWriter.ToString();
     }
 }

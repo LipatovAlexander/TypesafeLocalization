@@ -1,6 +1,6 @@
-﻿namespace TypesafeLocalization.LightJson.Serialization;
+﻿using ErrorType = TypesafeLocalization.LightJson.Serialization.JsonParseException.ErrorType;
 
-using ErrorType = JsonParseException.ErrorType;
+namespace TypesafeLocalization.LightJson.Serialization;
 
 /// <summary>
 /// Represents a text scanner that reads one character at a time.
@@ -109,7 +109,7 @@ public sealed class TextScanner
         else
         {
             throw new JsonParseException(
-                string.Format("Parser expected '{0}'", next),
+                $"Parser expected '{next}'",
                 ErrorType.InvalidOrUnexpectedCharacter,
                 _position
             );
@@ -133,7 +133,7 @@ public sealed class TextScanner
         catch (JsonParseException e) when (e.Type == ErrorType.InvalidOrUnexpectedCharacter)
         {
             throw new JsonParseException(
-                string.Format("Parser expected '{0}'", next),
+                $"Parser expected '{next}'",
                 ErrorType.InvalidOrUnexpectedCharacter,
                 _position
             );

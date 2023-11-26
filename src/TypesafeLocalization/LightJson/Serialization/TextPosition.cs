@@ -1,5 +1,7 @@
 ﻿namespace TypesafeLocalization.LightJson.Serialization;
 
+// ReSharper disable NotAccessedField.Global
+
 /// <summary>
 /// Represents a position within a plain text resource.
 /// </summary>

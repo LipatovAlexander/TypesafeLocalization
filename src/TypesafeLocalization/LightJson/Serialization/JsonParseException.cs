@@ -1,5 +1,8 @@
 namespace TypesafeLocalization.LightJson.Serialization;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 /// <summary>
 /// The exception that is thrown when a JSON message cannot be parsed.
 /// </summary>
@@ -51,20 +54,13 @@ public sealed class JsonParseException : Exception
 
     private static string GetDefaultMessage(ErrorType type)
     {
-        switch (type)
+        return type switch
         {
-            case ErrorType.IncompleteMessage:
-                return "The string ended before a value could be parsed.";
-
-            case ErrorType.InvalidOrUnexpectedCharacter:
-                return "The parser encountered an invalid or unexpected character.";
-
-            case ErrorType.DuplicateObjectKeys:
-                return "The parser encountered a JsonObject with duplicate keys.";
-
-            default:
-                return "An error occurred while parsing the JSON message.";
-        }
+            ErrorType.IncompleteMessage => "The string ended before a value could be parsed.",
+            ErrorType.InvalidOrUnexpectedCharacter => "The parser encountered an invalid or unexpected character.",
+            ErrorType.DuplicateObjectKeys => "The parser encountered a JsonObject with duplicate keys.",
+            _ => "An error occurred while parsing the JSON message."
+        };
     }
 
     /// <summary>

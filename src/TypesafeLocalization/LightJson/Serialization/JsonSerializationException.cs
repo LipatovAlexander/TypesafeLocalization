@@ -1,5 +1,9 @@
 ﻿namespace TypesafeLocalization.LightJson.Serialization;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 /// <summary>
 /// The exception that is thrown when a JSON value cannot be serialized.
 /// </summary>
@@ -43,20 +47,13 @@ public sealed class JsonSerializationException : Exception
 
     private static string GetDefaultMessage(ErrorType type)
     {
-        switch (type)
+        return type switch
         {
-            case ErrorType.InvalidNumber:
-                return "The value been serialized contains an invalid number value (NAN, infinity).";
-
-            case ErrorType.InvalidValueType:
-                return "The value been serialized contains (or is) an invalid JSON type.";
-
-            case ErrorType.CircularReference:
-                return "The value been serialized contains circular references.";
-
-            default:
-                return "An error occurred during serialization.";
-        }
+            ErrorType.InvalidNumber => "The value been serialized contains an invalid number value (NAN, infinity).",
+            ErrorType.InvalidValueType => "The value been serialized contains (or is) an invalid JSON type.",
+            ErrorType.CircularReference => "The value been serialized contains circular references.",
+            _ => "An error occurred during serialization."
+        };
     }
 
     /// <summary>

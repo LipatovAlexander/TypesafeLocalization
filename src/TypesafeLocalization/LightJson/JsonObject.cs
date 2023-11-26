@@ -4,6 +4,10 @@ using TypesafeLocalization.LightJson.Serialization;
 
 namespace TypesafeLocalization.LightJson;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Local
+// ReSharper disable NotAccessedField.Local
+
 /// <summary>
 /// Represents a key-value pair collection of JsonValue objects.
 /// </summary>

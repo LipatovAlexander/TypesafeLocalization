@@ -3,6 +3,9 @@ using TypesafeLocalization.LightJson.Serialization;
 
 namespace TypesafeLocalization.LightJson;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Local
+
 /// <summary>
 /// Represents an ordered collection of JsonValues.
 /// </summary>
