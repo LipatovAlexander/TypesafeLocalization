@@ -28,9 +28,9 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public interface ILocalizer");
         stringBuilder.AppendLine("{");
 
-        foreach (var translation in localizationInfo.BaseTranslation.Dictionary)
+        foreach (var key in localizationInfo.Keys)
         {
-            stringBuilder.AppendLine($"    string {translation.Key}();");
+            stringBuilder.AppendLine($"    string {key}();");
         }
 
         stringBuilder.AppendLine("}");
@@ -51,7 +51,7 @@ public static class SourceGenerationHelper
 
         foreach (var translation in localizationInfo.Translations)
         {
-            stringBuilder.AppendLine($"    {translation.NormalizedLocale},");
+            stringBuilder.AppendLine($"    {translation.Locale},");
         }
 
         stringBuilder.AppendLine("}");
@@ -77,9 +77,9 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("    }");
         stringBuilder.AppendLine();
 
-        foreach (var baseTranslation in localizationInfo.BaseTranslation.Dictionary)
+        foreach (var key in localizationInfo.Keys)
         {
-            stringBuilder.AppendLine($"    public string {baseTranslation.Key}()");
+            stringBuilder.AppendLine($"    public string {key}()");
             stringBuilder.AppendLine("    {");
             stringBuilder.AppendLine("        return _locale switch");
             stringBuilder.AppendLine("        {");
@@ -87,7 +87,7 @@ public static class SourceGenerationHelper
             foreach (var translation in localizationInfo.Translations)
             {
                 stringBuilder.AppendLine(
-                    $"            Locale.{translation.NormalizedLocale} => \"{translation.Dictionary[baseTranslation.Key]}\",");
+                    $"            Locale.{translation.Locale} => \"{translation.Dictionary[key]}\",");
             }
 
             stringBuilder.AppendLine("            _ => throw new ArgumentOutOfRangeException()");

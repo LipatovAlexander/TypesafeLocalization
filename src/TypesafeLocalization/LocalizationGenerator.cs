@@ -9,35 +9,16 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var configurations = context.AdditionalTextsProvider
-            .Where(text => Path.GetFileName(text.Path) == "TypesafeLocalizationConfig.json")
-            .Collect();
-
         var translations = context.AdditionalTextsProvider
             .Where(text => Regex.IsMatch(Path.GetFileName(text.Path), @"^Translation\.[a-zA-Z\-_]*\.i18n\.json$"))
             .Collect();
 
-        var valueProvider = configurations.Combine(translations);
-
-        context.RegisterSourceOutput(valueProvider, GenerateCode);
+        context.RegisterSourceOutput(translations, GenerateCode);
     }
 
-    private static void GenerateCode(
-        SourceProductionContext context,
-        (ImmutableArray<AdditionalText> Left, ImmutableArray<AdditionalText> Right) values)
+    private static void GenerateCode(SourceProductionContext context, ImmutableArray<AdditionalText> translationsTexts)
     {
-        var (configurationsTexts, translationsTexts) = values;
-
-        var localizationInfoParsed = LocalizationInfoParser.TryParse(
-            context,
-            configurationsTexts,
-            translationsTexts,
-            out var localizationInfo);
-
-        if (!localizationInfoParsed)
-        {
-            return;
-        }
+        var localizationInfo = LocalizationInfoParser.Parse(context, translationsTexts);
 
         context.AddSource("Locale.g.cs", SourceGenerationHelper.LocaleEnum(localizationInfo));
         context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.LocalizerInterface(localizationInfo));

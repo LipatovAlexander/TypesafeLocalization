@@ -7,12 +7,17 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <!--    <ItemGroup>-->
+    <!--      <PackageReference Include="TypesafeLocalization" Version="0.0.1" />-->
+    <!--    </ItemGroup>-->
+
     <ItemGroup>
-      <PackageReference Include="TypesafeLocalization" Version="0.0.1" />
+        <ProjectReference Include="..\..\src\TypesafeLocalization\TypesafeLocalization.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="TypesafeLocalizationConfig.json" />
       <AdditionalFiles Include="Translation.en-US.i18n.json" />
       <AdditionalFiles Include="Translation.ru-RU.i18n.json" />
     </ItemGroup>
