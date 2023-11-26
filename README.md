@@ -1,38 +1,64 @@
 # TypesafeLocalization
 
 ## Usage
-
+       
+`Translation.en-US.json`
 ```json
 {
-  "HelloWorld": "Hello, world!",
-  "Key": "{{what}} is {{how}}",
-  "Key2": "There is {{count:int}} items"
+  "HelloWorld": "Hello world!"
+}
+```
+
+`Translation.ru-RU.json`
+```json
+{
+  "HelloWorld": "Привет мир!"
 }
 ```
 
 ```csharp
+namespace TypesafeLocalization;
+
+public enum Locale
+{
+    enUS,
+    ruRU
+}
+
 public interface ILocalizer
 {
-  public string HelloWorld();
-  public string Key(string what, string how);
-  public string Key2(int count);
+    string HelloWorld();
 }
-```
 
-## Compile-time warnings
-
-Основной файл локализации (`*.en.json`):
-```json
+public sealed class Localizer : ILocalizer
 {
-  "HelloWorld": "Hello, world!",
-  "Greeting": "Hello, {{name}}"
+    private readonly Locale _locale;
+    
+    public Localizer(Locale locale)
+    {
+        _locale = locale;
+    }
+    
+    public string HelloWorld()
+    {
+        return _locale switch
+        {
+            Locale.enUS => "Hello world!",
+            Locale.ruRU => "Привет мир!",
+            _ => throw new InvalidOperationException()
+        };
+    }
+    
+public interface ILocalizerFactory
+{
+    ILocalizer CreateLocalizer(Locale locale);
 }
-```
-
-Второстепенный файл локализации (`*.ru.json`):
-```json
+    
+public sealed class LocalizerFactory : ILocalizerFactory
 {
-  "GoodbyeWorld": "Goodbye, world!", // Warning: Неизвестный ключ GoodbyeWorld
-  "Greeting": "Hello, {{user}}" // Warning: Неизвестный параметр user
-} // Warning: Отсутствует ключ HelloWorld
+    public ILocalizer CreateLocalizer(Locale locale)
+    {
+        return new Localizer(locale);
+    }
+}
 ```

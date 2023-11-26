@@ -24,7 +24,7 @@ public sealed class Localizer : ILocalizer
         {
             Locale.enUS => "Value 1",
             Locale.ruRU => "Значение 1",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new InvalidOperationException()
         };
     }
 
@@ -34,7 +34,7 @@ public sealed class Localizer : ILocalizer
         {
             Locale.enUS => "Value 2",
             Locale.ruRU => "Значение 2",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new InvalidOperationException()
         };
     }
 
@@ -44,7 +44,7 @@ public sealed class Localizer : ILocalizer
         {
             Locale.enUS => "Value 3",
             Locale.ruRU => "Значение 3",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new InvalidOperationException()
         };
     }
 

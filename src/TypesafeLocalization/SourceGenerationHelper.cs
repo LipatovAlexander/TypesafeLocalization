@@ -90,7 +90,7 @@ public static class SourceGenerationHelper
                     $"            Locale.{translation.Locale} => \"{translation.Dictionary[key]}\",");
             }
 
-            stringBuilder.AppendLine("            _ => throw new ArgumentOutOfRangeException()");
+            stringBuilder.AppendLine("            _ => throw new InvalidOperationException()");
             stringBuilder.AppendLine("        };");
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine();
