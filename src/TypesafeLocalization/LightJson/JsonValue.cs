@@ -53,7 +53,7 @@ public readonly struct JsonValue
 
             var value = _value;
 
-            return value is >= int.MinValue and <= int.MaxValue && unchecked((int) value) == value;
+            return value is >= int.MinValue and <= int.MaxValue && Math.Abs(unchecked((int) value) - value) < double.Epsilon;
         }
     }
 
@@ -92,7 +92,7 @@ public readonly struct JsonValue
             switch (Type)
             {
                 case JsonValueType.Boolean:
-                    return _value == 1;
+                    return Math.Abs(_value - 1) < double.Epsilon;
 
                 case JsonValueType.Number:
                     return _value != 0;
@@ -140,7 +140,7 @@ public readonly struct JsonValue
             switch (Type)
             {
                 case JsonValueType.Boolean:
-                    return _value == 1
+                    return Math.Abs(_value - 1) < double.Epsilon
                         ? 1
                         : 0;
 
@@ -173,7 +173,7 @@ public readonly struct JsonValue
         {
             return Type switch
             {
-                JsonValueType.Boolean => _value == 1 ? "true" : "false",
+                JsonValueType.Boolean => Math.Abs(_value - 1) < double.Epsilon ? "true" : "false",
                 JsonValueType.Number => _value.ToString(CultureInfo.InvariantCulture),
                 JsonValueType.String => (string) _reference,
                 _ => null
@@ -522,7 +522,7 @@ public readonly struct JsonValue
     {
         if (jsonValue.IsBoolean)
         {
-            return jsonValue._value == 1;
+            return Math.Abs(jsonValue._value - 1) < double.Epsilon;
         }
 
         return false;
@@ -658,7 +658,7 @@ public readonly struct JsonValue
     public static bool operator ==(JsonValue a, JsonValue b)
     {
         return a.Type == b.Type
-            && a._value == b._value
+            && Math.Abs(a._value - b._value) < double.Epsilon
             && Equals(a._reference, b._reference);
     }
 
