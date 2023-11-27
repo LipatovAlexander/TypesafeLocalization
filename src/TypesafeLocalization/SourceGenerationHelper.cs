@@ -17,7 +17,7 @@ public static class SourceGenerationHelper
 
     private const string Namespace = "namespace TypesafeLocalization;";
 
-    public static string LocalizerInterface(LocalizationInfo localizationInfo)
+    public static string LocalizerInterface(LocalizationContext localizationContext)
     {
         var stringBuilder = new StringBuilder();
 
@@ -28,9 +28,9 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public interface ILocalizer");
         stringBuilder.AppendLine("{");
 
-        foreach (var key in localizationInfo.Keys)
+        foreach (var baseTranslation in localizationContext.BaseTranslation.Dictionary)
         {
-            stringBuilder.AppendLine($"    string {key}();");
+            stringBuilder.AppendLine($"    string {baseTranslation.Key}();");
         }
 
         stringBuilder.AppendLine("}");
@@ -38,7 +38,7 @@ public static class SourceGenerationHelper
         return stringBuilder.ToString();
     }
 
-    public static string LocaleEnum(LocalizationInfo localizationInfo)
+    public static string LocaleEnum(LocalizationContext localizationContext)
     {
         var stringBuilder = new StringBuilder();
 
@@ -49,7 +49,7 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public enum Locale");
         stringBuilder.AppendLine("{");
 
-        foreach (var translation in localizationInfo.Translations)
+        foreach (var translation in localizationContext.Translations)
         {
             stringBuilder.AppendLine($"    {translation.Locale},");
         }
@@ -59,7 +59,7 @@ public static class SourceGenerationHelper
         return stringBuilder.ToString();
     }
 
-    public static string LocalizerClass(LocalizationInfo localizationInfo)
+    public static string LocalizerClass(LocalizationContext localizationContext)
     {
         var stringBuilder = new StringBuilder();
 
@@ -77,17 +77,16 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("    }");
         stringBuilder.AppendLine();
 
-        foreach (var key in localizationInfo.Keys)
+        foreach (var baseTranslation in localizationContext.BaseTranslation.Dictionary)
         {
-            stringBuilder.AppendLine($"    public string {key}()");
+            stringBuilder.AppendLine($"    public string {baseTranslation.Key}()");
             stringBuilder.AppendLine("    {");
             stringBuilder.AppendLine("        return _locale switch");
             stringBuilder.AppendLine("        {");
 
-            foreach (var translation in localizationInfo.Translations)
+            foreach (var (locale, dictionary) in localizationContext.Translations)
             {
-                stringBuilder.AppendLine(
-                    $"            Locale.{translation.Locale} => \"{translation.Dictionary[key]}\",");
+                stringBuilder.AppendLine($"            Locale.{locale} => \"{dictionary[baseTranslation.Key]}\",");
             }
 
             stringBuilder.AppendLine("            _ => throw new InvalidOperationException()");

@@ -6,28 +6,40 @@ public sealed class LocalizationGeneratorTests
     [Fact]
     public async Task CanGenerateCorrectCode()
     {
-        const string translationPath1 = "Translation.en-US.i18n.json";
-        const string translationJson1 = """
-                                        {
-                                            "Key1": "Value 1",
-                                            "Key2": "Value 2",
-                                            "Key3": "Value 3"
-                                        }
-                                        """;
+        const string configurationPath = "Localization/LocalizationConfig.json";
+        const string configurationJson = """
+                                         {
+                                             "baseLocale": "en-US"
+                                         }
+                                         """;
 
-        var translationAdditionalText1 = new InMemoryAdditionalText(translationPath1, translationJson1);
+        var configurationAdditionalText = new InMemoryAdditionalText(configurationPath, configurationJson);
 
-        const string translationPath2 = "Translation.ru-RU.i18n.json";
-        const string translationJson2 = """
-                                        {
-                                            "Key1": "Значение 1",
-                                            "Key2": "Значение 2",
-                                            "Key3": "Значение 3"
-                                        }
-                                        """;
+        const string baseTranslationPath = "Localization/Translation.en-US.json";
+        const string baseTranslationJson = """
+                                           {
+                                               "Key1": "Value 1",
+                                               "Key2": "Value 2",
+                                               "Key3": "Value 3"
+                                           }
+                                           """;
 
-        var translationAdditionalText2 = new InMemoryAdditionalText(translationPath2, translationJson2);
+        var baseTranslationAdditionalText = new InMemoryAdditionalText(baseTranslationPath, baseTranslationJson);
 
-        await TestHelper.Verify<LocalizationGenerator>(translationAdditionalText1, translationAdditionalText2);
+        const string secondTranslationPath = "Localization/Translation.ru-RU.json";
+        const string secondTranslationJson = """
+                                             {
+                                                 "Key1": "Значение 1",
+                                                 "Key2": "Значение 2",
+                                                 "Key3": "Значение 3"
+                                             }
+                                             """;
+
+        var secondTranslationAdditionalText = new InMemoryAdditionalText(secondTranslationPath, secondTranslationJson);
+
+        await TestHelper.Verify<LocalizationGenerator>(
+            configurationAdditionalText,
+            baseTranslationAdditionalText,
+            secondTranslationAdditionalText);
     }
 }

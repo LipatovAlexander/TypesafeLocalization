@@ -18,8 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Translation.en-US.i18n.json" />
-      <AdditionalFiles Include="Translation.ru-RU.i18n.json" />
+        <AdditionalFiles Include="Localization\LocalizationConfig.json"/>
+        <AdditionalFiles Include="Localization\Translation.en-US.json"/>
+        <AdditionalFiles Include="Localization\Translation.ru-RU.json"/>
     </ItemGroup>
 
 </Project>
