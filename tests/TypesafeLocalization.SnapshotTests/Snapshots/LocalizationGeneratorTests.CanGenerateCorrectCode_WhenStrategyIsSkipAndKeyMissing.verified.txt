@@ -1,0 +1,14 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: TL0005,
+      Title: Localization key missing,
+      Severity: Warning,
+      WarningLevel: 1,
+      Location: : (0,0)-(0,0),
+      MessageFormat: Localization key {0} is missing from translation {1},
+      Message: Localization key Key3 is missing from translation ru-RU,
+      Category: TypesafeLocalization
+    }
+  ]
+}

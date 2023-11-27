@@ -1,0 +1,14 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: TL0006,
+      Title: Extra localization key,
+      Severity: Warning,
+      WarningLevel: 1,
+      Location: : (0,0)-(0,0),
+      MessageFormat: Translation {0} contains a key {1} that is not in the base translation,
+      Message: Translation ru-RU contains a key Key4 that is not in the base translation,
+      Category: TypesafeLocalization
+    }
+  ]
+}

@@ -47,7 +47,7 @@ public static class AdditionalFilesParser
 
         static Strategy ParseStrategy(JsonValue jsonValue)
         {
-            if (!jsonValue.IsString || !Enum.TryParse<Strategy>(jsonValue.AsString, out var strategy))
+            if (!jsonValue.IsString || !Enum.TryParse<Strategy>(jsonValue.AsString, true, out var strategy))
             {
                 return LocalizationConfiguration.Default.Strategy;
             }
