@@ -29,10 +29,10 @@ file static class Descriptors
         DiagnosticSeverity.Warning,
         true);
 
-    public static readonly DiagnosticDescriptor MultipleTranslationsFoundForLocale = new(
+    public static readonly DiagnosticDescriptor DuplicateTranslationFile = new(
         "TL0004",
-        "Multiple translations found for one locale",
-        "Multiple translation files found for locale {0}",
+        "Duplicate translation",
+        "Translation file with path {0} is duplicate for locale {1}",
         "TypesafeLocalization",
         DiagnosticSeverity.Warning,
         true);
@@ -44,32 +44,68 @@ file static class Descriptors
         "TypesafeLocalization",
         DiagnosticSeverity.Warning,
         true);
+
+    public static readonly DiagnosticDescriptor ExtraLocalizationKey = new(
+        "TL0006",
+        "Extra localization key",
+        "Translation {0} contains a key {1} that is not in the base translation",
+        "TypesafeLocalization",
+        DiagnosticSeverity.Warning,
+        true);
 }
 
 public static class Diagnostics
 {
     public static Diagnostic ConfigurationFileDeserializationError(string filePath, JsonParseException exception)
     {
-        return Diagnostic.Create(Descriptors.ConfigurationFileDeserializationError, Location.None, filePath, exception.ToString());
+        return Diagnostic.Create(
+            Descriptors.ConfigurationFileDeserializationError,
+            Location.None,
+            filePath,
+            exception.ToString());
     }
 
     public static Diagnostic BaseTranslationNotFound(Locale baseLocale)
     {
-        return Diagnostic.Create(Descriptors.BaseTranslationNotFound, Location.None, baseLocale.OriginalName);
+        return Diagnostic.Create(
+            Descriptors.BaseTranslationNotFound,
+            Location.None,
+            baseLocale.OriginalName);
     }
 
     public static Diagnostic TranslationFileDeserializationError(string filePath, JsonParseException exception)
     {
-        return Diagnostic.Create(Descriptors.TranslationFileDeserializationError, Location.None, filePath, exception.ToString());
+        return Diagnostic.Create(
+            Descriptors.TranslationFileDeserializationError,
+            Location.None,
+            filePath,
+            exception.ToString());
     }
 
-    public static Diagnostic MultipleTranslationsFoundForLocale(Locale locale)
+    public static Diagnostic DuplicateTranslationFile(Translation translation)
     {
-        return Diagnostic.Create(Descriptors.MultipleTranslationsFoundForLocale, Location.None, locale.OriginalName);
+        return Diagnostic.Create(
+            Descriptors.DuplicateTranslationFile,
+            Location.None,
+            translation.FilePath,
+            translation.Locale.OriginalName);
     }
 
     public static Diagnostic LocalizationKeyMissing(string key, Locale locale)
     {
-        return Diagnostic.Create(Descriptors.LocalizationKeyMissing, Location.None, key, locale.OriginalName);
+        return Diagnostic.Create(
+            Descriptors.LocalizationKeyMissing,
+            Location.None,
+            key,
+            locale.OriginalName);
+    }
+
+    public static Diagnostic ExtraLocalizationKey(string key, Locale locale)
+    {
+        return Diagnostic.Create(
+            Descriptors.ExtraLocalizationKey,
+            Location.None,
+            locale.OriginalName,
+            key);
     }
 }

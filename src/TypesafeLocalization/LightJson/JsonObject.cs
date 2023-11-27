@@ -209,9 +209,9 @@ public sealed class JsonObject : IEnumerable<KeyValuePair<string, JsonValue>>, I
         return JsonWriter.Serialize(this, pretty);
     }
 
-    public IReadOnlyDictionary<string, JsonValue> AsDictionary()
+    public Dictionary<string, TElement> ToDictionary<TElement>(Func<JsonValue, TElement> elementSelector)
     {
-        return new ReadOnlyDictionary<string, JsonValue>(_properties);
+        return _properties.ToDictionary(x => x.Key, x => elementSelector(x.Value));
     }
 
     private class JsonObjectDebugView

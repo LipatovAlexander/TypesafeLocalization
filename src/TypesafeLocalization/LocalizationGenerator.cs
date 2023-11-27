@@ -40,22 +40,72 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             return;
         }
 
-        if (!TranslationsValidator.CheckForDuplicates(context, translations))
-        {
-            return;
-        }
-
-        if (!TranslationsValidator.CheckForNonExistentKeys(context, baseTranslation, translations))
-        {
-            return;
-        }
-
-        var localizationContext = new LocalizationContext(baseTranslation, translations);
+        var localizationContext = PrepareLocalizationContext(context, configuration, baseTranslation, translations);
 
         context.AddSource("Locale.g.cs", SourceGenerationHelper.LocaleEnum(localizationContext));
         context.AddSource("ILocalizer.g.cs", SourceGenerationHelper.LocalizerInterface(localizationContext));
         context.AddSource("Localizer.g.cs", SourceGenerationHelper.LocalizerClass(localizationContext));
         context.AddSource("ILocalizerFactory.g.cs", SourceGenerationHelper.LocalizerFactoryInterface);
         context.AddSource("LocalizerFactory.g.cs", SourceGenerationHelper.LocalizerFactoryClass);
+    }
+
+    private static LocalizationContext PrepareLocalizationContext(
+        SourceProductionContext context,
+        LocalizationConfiguration configuration,
+        Translation baseTranslation,
+        List<Translation> translations)
+    {
+        var duplicates = FindDuplicates(translations);
+
+        foreach (var duplicate in duplicates)
+        {
+            var diagnostic = Diagnostics.DuplicateTranslationFile(duplicate);
+            context.ReportDiagnostic(diagnostic);
+
+            translations.Remove(duplicate);
+        }
+
+        foreach (var translation in translations)
+        {
+            var missingKeys = FindMissingKeys(baseTranslation, translation);
+            var extraKeys = FindMissingKeys(translation, baseTranslation);
+
+            foreach (var key in missingKeys)
+            {
+                var diagnostic = Diagnostics.LocalizationKeyMissing(key, translation.Locale);
+                context.ReportDiagnostic(diagnostic);
+
+                if (configuration.Strategy == Strategy.Skip)
+                {
+                    baseTranslation.Dictionary.Remove(key);
+                }
+            }
+
+            foreach (var key in extraKeys)
+            {
+                var diagnostic = Diagnostics.ExtraLocalizationKey(key, translation.Locale);
+                context.ReportDiagnostic(diagnostic);
+
+                translation.Dictionary.Remove(key);
+            }
+        }
+
+        return new LocalizationContext(baseTranslation, translations);
+    }
+
+    private static IEnumerable<Translation> FindDuplicates(IEnumerable<Translation> translations)
+    {
+        var duplicates = translations
+            .GroupBy(l => l.Locale.OriginalName)
+            .SelectMany(g => g.Skip(1))
+            .Distinct()
+            .ToArray();
+
+        return duplicates;
+    }
+
+    private static IEnumerable<string> FindMissingKeys(Translation baseTranslation, Translation translation)
+    {
+        return baseTranslation.Dictionary.Keys.Except(translation.Dictionary.Keys);
     }
 }

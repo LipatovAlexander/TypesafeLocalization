@@ -84,9 +84,9 @@ public static class SourceGenerationHelper
             stringBuilder.AppendLine("        return _locale switch");
             stringBuilder.AppendLine("        {");
 
-            foreach (var (locale, dictionary) in localizationContext.Translations)
+            foreach (var translation in localizationContext.Translations)
             {
-                stringBuilder.AppendLine($"            Locale.{locale} => \"{dictionary[baseTranslation.Key]}\",");
+                stringBuilder.AppendLine($"            Locale.{translation.Locale} => \"{translation.Dictionary[baseTranslation.Key]}\",");
             }
 
             stringBuilder.AppendLine("            _ => throw new InvalidOperationException()");

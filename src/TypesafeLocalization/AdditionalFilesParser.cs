@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using TypesafeLocalization.LightJson;
 using TypesafeLocalization.LightJson.Serialization;
 
@@ -19,11 +18,18 @@ public static class AdditionalFilesParser
 
         try
         {
-            // TODO: Add validation
-            var json = JsonValue.Parse(jsonString).AsJsonObject;
-            var baseLocaleName = json["baseLocale"].AsString;
+            var jsonValue = JsonValue.Parse(jsonString);
+            if (!jsonValue.IsJsonObject)
+            {
+                return LocalizationConfiguration.Default;
+            }
 
-            return new LocalizationConfiguration(new Locale(baseLocaleName));
+            var jsonObject = jsonValue.AsJsonObject;
+
+            var baseLocale = ParseBaseLocale(jsonObject["baseLocale"]);
+            var strategy = ParseStrategy(jsonObject["strategy"]);
+
+            return new LocalizationConfiguration(baseLocale, strategy);
         }
         catch (JsonParseException exception)
         {
@@ -31,9 +37,26 @@ public static class AdditionalFilesParser
             context.ReportDiagnostic(diagnostic);
             return LocalizationConfiguration.Default;
         }
+
+        static Locale ParseBaseLocale(JsonValue jsonValue)
+        {
+            return jsonValue.IsString
+                ? new Locale(jsonValue.AsString)
+                : LocalizationConfiguration.Default.BaseLocale;
+        }
+
+        static Strategy ParseStrategy(JsonValue jsonValue)
+        {
+            if (!jsonValue.IsString || !Enum.TryParse<Strategy>(jsonValue.AsString, out var strategy))
+            {
+                return LocalizationConfiguration.Default.Strategy;
+            }
+
+            return strategy;
+        }
     }
 
-    public static IReadOnlyList<Translation> ParseTranslations(
+    public static List<Translation> ParseTranslations(
         SourceProductionContext context,
         IEnumerable<AdditionalText> translationsTexts)
     {
@@ -51,16 +74,9 @@ public static class AdditionalFilesParser
             try
             {
                 var json = JsonValue.Parse(jsonString).AsJsonObject;
-                var translationDictionary = json
-                    .AsDictionary()
-                    .ToImmutableSortedDictionary(
-                        x => x.Key,
-                        x => x.Value.AsString);
+                var translationDictionary = json.ToDictionary(x => x.AsString);
 
-                var filename = Path.GetFileNameWithoutExtension(translationText.Path);
-                var locale = new Locale(filename.Split('.')[1]);
-                
-                var translation = new Translation(locale, translationDictionary);
+                var translation = new Translation(translationText.Path, translationDictionary);
                 result.Add(translation);
             }
             catch (JsonParseException exception)
