@@ -1,3 +1,4 @@
 ﻿{
-  "baseLocale": "en-US"
+  "baseLocale": "en-US",
+  "strategy": "skip"
 }
