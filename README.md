@@ -1,7 +1,14 @@
 # TypesafeLocalization
 
 ## Usage
-       
+                          
+`LocalizationConfig.json`
+```json
+{
+  "baseLocale": "en-US"
+}
+```
+
 `Translation.en-US.json`
 ```json
 {
@@ -48,6 +55,7 @@ public sealed class Localizer : ILocalizer
             _ => throw new InvalidOperationException()
         };
     }
+}
     
 public interface ILocalizerFactory
 {
