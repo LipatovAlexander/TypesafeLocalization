@@ -47,6 +47,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
         context.AddSource("Localizer.g.cs", SourceGenerationHelper.LocalizerClass(localizationContext));
         context.AddSource("ILocalizerFactory.g.cs", SourceGenerationHelper.LocalizerFactoryInterface);
         context.AddSource("LocalizerFactory.g.cs", SourceGenerationHelper.LocalizerFactoryClass);
+        context.AddSource("TranslationNotFoundException.g.cs", SourceGenerationHelper.TranslationNotFoundException);
     }
 
     private static LocalizationContext PrepareLocalizationContext(
@@ -90,7 +91,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             }
         }
 
-        return new LocalizationContext(baseTranslation, translations);
+        return new LocalizationContext(configuration, baseTranslation, translations);
     }
 
     private static IEnumerable<Translation> FindDuplicates(IEnumerable<Translation> translations)

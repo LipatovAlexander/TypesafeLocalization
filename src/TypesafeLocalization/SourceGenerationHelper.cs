@@ -86,7 +86,17 @@ public static class SourceGenerationHelper
 
             foreach (var translation in localizationContext.Translations)
             {
-                stringBuilder.AppendLine($"            Locale.{translation.Locale} => \"{translation.Dictionary[baseTranslation.Key]}\",");
+                var translationCase = localizationContext.Configuration.Strategy switch
+                {
+                    Strategy.Skip =>
+                        $"            Locale.{translation.Locale} => \"{translation.Dictionary[baseTranslation.Key]}\",",
+                    Strategy.Throw => translation.Dictionary.TryGetValue(baseTranslation.Key, out var value)
+                        ? $"            Locale.{translation.Locale} => \"{value}\","
+                        : $"            Locale.{translation.Locale} => throw new TranslationNotFoundException(\"{baseTranslation.Key}\", _locale),",
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                stringBuilder.AppendLine(translationCase);
             }
 
             stringBuilder.AppendLine("            _ => throw new InvalidOperationException()");
@@ -122,4 +132,22 @@ public static class SourceGenerationHelper
                                                       }
                                                   }
                                                   """;
+
+    public const string TranslationNotFoundException = $$"""
+                                                         {{FileHeaderComment}}
+                                                         {{Namespace}}
+
+                                                         public sealed class TranslationNotFoundException : Exception
+                                                         {
+                                                             public string Key { get; }
+                                                             public Locale Locale { get; }
+                                                         
+                                                             public TranslationNotFoundException(string key, Locale locale)
+                                                                 : base($"Translation for key {key} in locale {locale} not found")
+                                                             {
+                                                                 Key = key;
+                                                                 Locale = locale;
+                                                             }
+                                                         }
+                                                         """;
 }
