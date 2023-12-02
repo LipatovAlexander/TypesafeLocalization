@@ -1,4 +1,4 @@
 ﻿{
   "baseLocale": "en-US",
-  "strategy": "skip"
+  "strategy": "fallback"
 }

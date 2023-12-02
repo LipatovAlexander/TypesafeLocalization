@@ -13,7 +13,8 @@ public sealed record LocalizationConfiguration(Locale BaseLocale, Strategy Strat
 public enum Strategy
 {
     Skip,
-    Throw
+    Throw,
+    Fallback
 }
 
 public sealed record Locale(string OriginalName)

@@ -93,6 +93,9 @@ public static class SourceGenerationHelper
                     Strategy.Throw => translation.Dictionary.TryGetValue(baseTranslation.Key, out var value)
                         ? $"            Locale.{translation.Locale} => \"{value}\","
                         : $"            Locale.{translation.Locale} => throw new TranslationNotFoundException(\"{baseTranslation.Key}\", _locale),",
+                    Strategy.Fallback => translation.Dictionary.TryGetValue(baseTranslation.Key, out var value)
+                        ? $"            Locale.{translation.Locale} => \"{value}\","
+                        : $"            Locale.{translation.Locale} => \"{baseTranslation.Value}\",",
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
