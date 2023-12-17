@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
+using TypesafeLocalization.Extensions;
 
 namespace TypesafeLocalization;
 
@@ -56,7 +57,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
         Translation baseTranslation,
         List<Translation> translations)
     {
-        var duplicates = FindDuplicates(translations);
+        var duplicates = translations.FindDuplicates(t => t.Locale.OriginalName);
 
         foreach (var duplicate in duplicates)
         {
@@ -92,17 +93,6 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
         }
 
         return new LocalizationContext(configuration, baseTranslation, translations);
-    }
-
-    private static IEnumerable<Translation> FindDuplicates(IEnumerable<Translation> translations)
-    {
-        var duplicates = translations
-            .GroupBy(l => l.Locale.OriginalName)
-            .SelectMany(g => g.Skip(1))
-            .Distinct()
-            .ToArray();
-
-        return duplicates;
     }
 
     private static IEnumerable<string> FindMissingKeys(Translation baseTranslation, Translation translation)

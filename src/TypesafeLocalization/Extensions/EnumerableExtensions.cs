@@ -2,21 +2,14 @@
 
 public static class EnumerableExtensions
 {
-    public static IList<T> IntersectAll<T>(this IEnumerable<IEnumerable<T>> sources)
+    public static IEnumerable<T> FindDuplicates<T, TKey>(this IEnumerable<T> source, Func<T, TKey> selector)
     {
-        HashSet<T>? hashSet = null;
-        foreach (var source in sources)
-        {
-            if (hashSet == null)
-            {
-                hashSet = new HashSet<T>(source);
-            }
-            else
-            {
-                hashSet.IntersectWith(source);
-            }
-        }
+        var duplicates = source
+            .GroupBy(selector)
+            .SelectMany(g => g.Skip(1))
+            .Distinct()
+            .ToArray();
 
-        return hashSet == null ? new List<T>() : hashSet.ToList();
+        return duplicates;
     }
 }
