@@ -69,8 +69,8 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
 
         foreach (var translation in translations)
         {
-            var missingKeys = FindMissingKeys(baseTranslation, translation).ToArray();
-            var extraKeys = FindMissingKeys(translation, baseTranslation).ToArray();
+            var missingKeys = FindMissingKeys(baseTranslation, translation);
+            var extraKeys = FindMissingKeys(translation, baseTranslation);
 
             foreach (var key in missingKeys)
             {
