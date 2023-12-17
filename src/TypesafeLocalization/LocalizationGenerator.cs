@@ -69,17 +69,26 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
 
         foreach (var translation in translations)
         {
-            var missingKeys = FindMissingKeys(baseTranslation, translation);
-            var extraKeys = FindMissingKeys(translation, baseTranslation);
+            var missingKeys = FindMissingKeys(baseTranslation, translation).ToArray();
+            var extraKeys = FindMissingKeys(translation, baseTranslation).ToArray();
 
             foreach (var key in missingKeys)
             {
                 var diagnostic = Diagnostics.LocalizationKeyMissing(key, translation.Locale);
                 context.ReportDiagnostic(diagnostic);
 
-                if (configuration.Strategy == Strategy.Skip)
+                switch (configuration.Strategy)
                 {
-                    baseTranslation.Dictionary.Remove(key);
+                    case Strategy.Skip:
+                        baseTranslation.Dictionary.Remove(key);
+                        break;
+                    case Strategy.Fallback:
+                        translation.Dictionary.Add(key, baseTranslation.Dictionary[key]);
+                        break;
+                    case Strategy.Throw:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
@@ -92,7 +101,7 @@ public sealed class LocalizationGenerator : IIncrementalGenerator
             }
         }
 
-        return new LocalizationContext(configuration, baseTranslation, translations);
+        return new LocalizationContext(baseTranslation, translations);
     }
 
     private static IEnumerable<string> FindMissingKeys(Translation baseTranslation, Translation translation)

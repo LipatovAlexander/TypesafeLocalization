@@ -1,7 +1,6 @@
 ﻿namespace TypesafeLocalization;
 
 public sealed record LocalizationContext(
-    LocalizationConfiguration Configuration,
     Translation BaseTranslation,
     List<Translation> Translations);
 
@@ -27,7 +26,12 @@ public sealed record Locale(string OriginalName)
     }
 }
 
-public sealed record Translation(string FilePath, Dictionary<string, string> Dictionary)
+public sealed record Translation(string FilePath, Dictionary<string, Template> Dictionary)
 {
     public Locale Locale { get; } = new(Path.GetFileNameWithoutExtension(FilePath).Split('.')[1]);
+}
+
+public sealed class Template(string text)
+{
+    public string Text { get; } = text;
 }

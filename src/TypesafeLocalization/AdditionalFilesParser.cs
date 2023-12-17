@@ -74,7 +74,7 @@ public static class AdditionalFilesParser
             try
             {
                 var json = JsonValue.Parse(jsonString).AsJsonObject;
-                var translationDictionary = json.ToDictionary(x => x.AsString);
+                var translationDictionary = json.ToDictionary(x => new Template(x.AsString));
 
                 var translation = new Translation(translationText.Path, translationDictionary);
                 result.Add(translation);

@@ -28,9 +28,9 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("public interface ILocalizer");
         stringBuilder.AppendLine("{");
 
-        foreach (var baseTranslation in localizationContext.BaseTranslation.Dictionary)
+        foreach (var key in localizationContext.BaseTranslation.Dictionary.Keys)
         {
-            stringBuilder.AppendLine($"    string {baseTranslation.Key}();");
+            stringBuilder.AppendLine($"    string {key}();");
         }
 
         stringBuilder.AppendLine("}");
@@ -77,29 +77,19 @@ public static class SourceGenerationHelper
         stringBuilder.AppendLine("    }");
         stringBuilder.AppendLine();
 
-        foreach (var baseTranslation in localizationContext.BaseTranslation.Dictionary)
+        foreach (var key in localizationContext.BaseTranslation.Dictionary.Keys)
         {
-            stringBuilder.AppendLine($"    public string {baseTranslation.Key}()");
+            stringBuilder.AppendLine($"    public string {key}()");
             stringBuilder.AppendLine("    {");
             stringBuilder.AppendLine("        return _locale switch");
             stringBuilder.AppendLine("        {");
 
             foreach (var translation in localizationContext.Translations)
             {
-                var translationCase = localizationContext.Configuration.Strategy switch
-                {
-                    Strategy.Skip =>
-                        $"            Locale.{translation.Locale} => \"{translation.Dictionary[baseTranslation.Key]}\",",
-                    Strategy.Throw => translation.Dictionary.TryGetValue(baseTranslation.Key, out var value)
-                        ? $"            Locale.{translation.Locale} => \"{value}\","
-                        : $"            Locale.{translation.Locale} => throw new TranslationNotFoundException(\"{baseTranslation.Key}\", _locale),",
-                    Strategy.Fallback => translation.Dictionary.TryGetValue(baseTranslation.Key, out var value)
-                        ? $"            Locale.{translation.Locale} => \"{value}\","
-                        : $"            Locale.{translation.Locale} => \"{baseTranslation.Value}\",",
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-
-                stringBuilder.AppendLine(translationCase);
+                stringBuilder.AppendLine(
+                    !translation.Dictionary.TryGetValue(key, out var template)
+                        ? $"            Locale.{translation.Locale} => throw new TranslationNotFoundException(\"{key}\", _locale),"
+                        : $"            Locale.{translation.Locale} => \"{template.Text}\",");
             }
 
             stringBuilder.AppendLine("            _ => throw new InvalidOperationException()");
